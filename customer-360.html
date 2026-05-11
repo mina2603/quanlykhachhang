@@ -408,6 +408,87 @@
   .role-influencer { background: #DBEAFE; color: #1E40AF; }
   .role-blocker { background: #F3E8FF; color: #6B21A8; }
   .role-enduser { background: #F1F5F9; color: #475569; }
+  /* Stage badge — mức độ thân thiết */
+  .stage-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .stage-xacach   { background: #F1F5F9; color: #475569; }
+  .stage-xagiao   { background: #DBEAFE; color: #1E40AF; }
+  .stage-quenbiet { background: #FEF3C7; color: #854D0E; }
+  .stage-thanthiet{ background: linear-gradient(90deg, #FCE7F3, #FBCFE8); color: #9D174D; }
+
+  /* KPI widget */
+  .kpi-widget {
+    background: linear-gradient(135deg, #831843 0%, #BE185D 50%, #E87722 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: var(--shadow-lg);
+  }
+  .kpi-widget-left { flex: 0 0 auto; }
+  .kpi-widget-icon { font-size: 36px; }
+  .kpi-widget-body { flex: 1; }
+  .kpi-widget-title { font-size: 13px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.6px; }
+  .kpi-widget-numbers { font-size: 32px; font-weight: 800; line-height: 1.1; margin: 4px 0 8px; }
+  .kpi-widget-numbers .total { opacity: 0.7; font-weight: 500; }
+  .kpi-widget-bar {
+    height: 10px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .kpi-widget-bar-fill {
+    height: 100%;
+    background: white;
+    border-radius: 999px;
+    transition: width 0.6s ease;
+  }
+  .kpi-widget-sub { font-size: 12px; opacity: 0.9; margin-top: 6px; }
+
+  /* Priority targets card */
+  .priority-list { display: grid; gap: 10px; }
+  .priority-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #FFFBEB;
+    border-left: 3px solid #EAB308;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .priority-item:hover { background: #FEF3C7; transform: translateX(2px); }
+  .priority-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    flex-shrink: 0;
+  }
+  .priority-body { flex: 1; }
+  .priority-name { font-weight: 600; font-size: 13px; }
+  .priority-meta { font-size: 11px; color: var(--text-muted); }
+  .priority-score {
+    font-size: 11px;
+    font-weight: 600;
+    background: #FEF3C7;
+    color: #854D0E;
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
   .stakeholder-info {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -635,6 +716,31 @@
     <p>Hôm nay <span id="todayDate"></span> · Quản lý <strong id="totalCustomers">0</strong> key accounts</p>
   </div>
 
+  <!-- KPI WIDGET — Thân thiết X/20 -->
+  <div class="kpi-widget" id="kpiWidget">
+    <div class="kpi-widget-left">
+      <div class="kpi-widget-icon">❤️</div>
+    </div>
+    <div class="kpi-widget-body">
+      <div class="kpi-widget-title">KPI Q · Đầu mối Thân thiết</div>
+      <div class="kpi-widget-numbers"><span id="kpiCurrent">0</span><span class="total"> / <span id="kpiTarget">20</span></span></div>
+      <div class="kpi-widget-bar"><div class="kpi-widget-bar-fill" id="kpiBar" style="width:0%"></div></div>
+      <div class="kpi-widget-sub" id="kpiSub"></div>
+    </div>
+  </div>
+
+  <!-- PRIORITY TARGETS — Gần đạt Thân thiết -->
+  <div class="section-title">
+    🎯 Đầu tư tuần này — Gần đạt Thân thiết
+    <span class="pill" id="priorityPill">0 người</span>
+  </div>
+  <div class="card">
+    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+      Những đầu mối đang ở Quen biết với 3-4 tiêu chí — chỉ cần thêm 1-2 hành động cá nhân là lên Thân thiết, đóng góp ngay vào KPI.
+    </div>
+    <div class="priority-list" id="priorityList"></div>
+  </div>
+
   <div class="stats-row">
     <div class="stat-card green">
       <div class="stat-label">Khỏe mạnh</div>
@@ -812,7 +918,9 @@ const customers = [
         channel: 'Email + lịch trực tiếp',
         phone: '0912.xxx.xxx',
         email: 'huong.nguyen@vinamilk.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, false, false],
+        stage: 'thanthiet'
       },
       {
         name: 'Trần Văn Phúc',
@@ -824,7 +932,9 @@ const customers = [
         channel: 'Qua thư ký - Chị Lan',
         phone: '028.xxx.xxxx',
         email: 'phuc.tran@vinamilk.com.vn',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, true, true, false, false, false, false],
+        stage: 'quenbiet'
       },
       {
         name: 'Lê Thị Hồng Nhung',
@@ -836,7 +946,9 @@ const customers = [
         channel: 'Zalo + email',
         phone: '0987.xxx.xxx',
         email: 'nhung.le@vinamilk.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, true, true],
+        stage: 'thanthiet'
       },
       {
         name: 'Phạm Quốc Bảo',
@@ -848,7 +960,9 @@ const customers = [
         channel: 'Gọi điện trực tiếp',
         phone: '0934.xxx.xxx',
         email: 'bao.pham@vinamilk.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, false, true, false, false, false],
+        stage: 'quenbiet'
       },
       {
         name: 'Vũ Thị Thu Trang',
@@ -860,7 +974,9 @@ const customers = [
         channel: 'Slack + Zalo',
         phone: '0978.xxx.xxx',
         email: 'trang.vu@vinamilk.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, true, false],
+        stage: 'thanthiet'
       }
     ],
     interactions: [
@@ -908,7 +1024,9 @@ const customers = [
         channel: 'Lịch hẹn qua thư ký',
         phone: '0901.xxx.xxx',
         email: 'hieu.do@techcombank.com',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, false, false, false, false, false, false],
+        stage: 'xagiao'
       },
       {
         name: 'Nguyễn Lan Anh',
@@ -920,7 +1038,9 @@ const customers = [
         channel: 'Email formal',
         phone: '0913.xxx.xxx',
         email: 'lananh.nguyen@techcombank.com',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, true, false, false, false, false, false],
+        stage: 'xagiao'
       },
       {
         name: 'Trần Hữu Đạt',
@@ -932,7 +1052,9 @@ const customers = [
         channel: 'Zalo + Slack',
         phone: '0966.xxx.xxx',
         email: 'dat.tran@techcombank.com',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, false, false],
+        stage: 'thanthiet'
       },
       {
         name: 'Hoàng Thị Mai',
@@ -944,7 +1066,9 @@ const customers = [
         channel: 'Email + Zalo',
         phone: '0978.xxx.xxx',
         email: 'mai.hoang@techcombank.com',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, false, false, false, false, false],
+        stage: 'quenbiet'
       }
     ],
     interactions: [
@@ -990,7 +1114,9 @@ const customers = [
         channel: 'Khó tiếp cận, qua thư ký',
         phone: '0938.xxx.xxx',
         email: 'tuan.le@novaland.com.vn',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, false, false, false, false, false, false],
+        stage: 'xagiao'
       },
       {
         name: 'Phạm Thị Hà',
@@ -1002,7 +1128,9 @@ const customers = [
         channel: 'Zalo (rất thân thiện)',
         phone: '0987.xxx.xxx',
         email: 'ha.pham@novaland.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, true, true],
+        stage: 'thanthiet'
       },
       {
         name: 'Nguyễn Văn Khánh',
@@ -1014,7 +1142,9 @@ const customers = [
         channel: 'Email formal',
         phone: '0901.xxx.xxx',
         email: 'khanh.nguyen@novaland.com.vn',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, false, false, false, false, false, false],
+        stage: 'xagiao'
       },
       {
         name: 'Trần Thị Linh',
@@ -1026,7 +1156,9 @@ const customers = [
         channel: 'Slack',
         phone: '0966.xxx.xxx',
         email: 'linh.tran@novaland.com.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, false, false, true, false, false, false],
+        stage: 'quenbiet'
       }
     ],
     interactions: [
@@ -1073,7 +1205,9 @@ const customers = [
         channel: 'Zalo + Slack (rất responsive)',
         phone: '0908.xxx.xxx',
         email: 'hieuem.doan@mwg.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, true, true],
+        stage: 'thanthiet'
       },
       {
         name: 'Trần Huy Thanh Tùng',
@@ -1085,7 +1219,9 @@ const customers = [
         channel: 'Email + meeting hàng tháng',
         phone: '0912.xxx.xxx',
         email: 'tung.tran@mwg.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, false, true],
+        stage: 'thanthiet'
       },
       {
         name: 'Nguyễn Thị Bích Ngọc',
@@ -1097,7 +1233,9 @@ const customers = [
         channel: 'Zalo + Slack',
         phone: '0987.xxx.xxx',
         email: 'ngoc.nguyen@mwg.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, true, true],
+        stage: 'thanthiet'
       },
       {
         name: 'Lê Quang Thiện',
@@ -1109,7 +1247,9 @@ const customers = [
         channel: 'Email formal',
         phone: '0938.xxx.xxx',
         email: 'thien.le@mwg.vn',
-        zalo: 'Không'
+        zalo: 'Không',
+        criteria: [true, false, false, false, false, false, false, false],
+        stage: 'xagiao'
       },
       {
         name: 'Vũ Minh Đức',
@@ -1121,7 +1261,9 @@ const customers = [
         channel: 'Slack 24/7',
         phone: '0978.xxx.xxx',
         email: 'duc.vu@mwg.vn',
-        zalo: 'Có'
+        zalo: 'Có',
+        criteria: [true, true, true, true, true, true, false, false],
+        stage: 'thanthiet'
       }
     ],
     interactions: [
@@ -1144,6 +1286,34 @@ let currentView = 'home';
 let currentCustomerId = null;
 
 // ====== HELPERS ======
+const STAGE_META = {
+  xacach:    { icon: '🧊', label: 'Xa cách',    cls: 'stage-xacach',    rank: 1 },
+  xagiao:    { icon: '🤝', label: 'Xã giao',    cls: 'stage-xagiao',    rank: 2 },
+  quenbiet:  { icon: '😊', label: 'Quen biết',  cls: 'stage-quenbiet',  rank: 3 },
+  thanthiet: { icon: '❤️', label: 'Thân thiết', cls: 'stage-thanthiet', rank: 4 },
+};
+const KPI_TARGET = 20;
+function stakeholderStage(s) {
+  if (s.stage && STAGE_META[s.stage]) return s.stage;
+  if (!s.criteria) return 'xacach';
+  const c = s.criteria.filter(Boolean).length;
+  if (c === 0) return 'xacach';
+  if (c <= 2) return 'xagiao';
+  if (c <= 4) return 'quenbiet';
+  return 'thanthiet';
+}
+function stageBadge(s) {
+  const key = stakeholderStage(s);
+  const meta = STAGE_META[key];
+  const count = s.criteria ? s.criteria.filter(Boolean).length : '?';
+  return `<span class="stage-badge ${meta.cls}" title="Đạt ${count}/8 tiêu chí thân thiết">${meta.icon} ${meta.label}</span>`;
+}
+function allStakeholders() {
+  const all = [];
+  customers.forEach(c => c.stakeholders.forEach(s => all.push({ ...s, customer: c })));
+  return all;
+}
+
 function logoHtml(c) {
   const initials = c.name.substr(0,2).toUpperCase();
   if (!c.logoDomain) return initials;
@@ -1194,6 +1364,45 @@ function init() {
 }
 
 function renderHome() {
+  // ===== KPI: Thân thiết X / 20 =====
+  const all = allStakeholders();
+  const thanthiet = all.filter(s => stakeholderStage(s) === 'thanthiet');
+  const kpiCurr = thanthiet.length;
+  const pct = Math.min(100, Math.round((kpiCurr / KPI_TARGET) * 100));
+  document.getElementById('kpiCurrent').textContent = kpiCurr;
+  document.getElementById('kpiTarget').textContent = KPI_TARGET;
+  document.getElementById('kpiBar').style.width = pct + '%';
+  const remaining = Math.max(0, KPI_TARGET - kpiCurr);
+  document.getElementById('kpiSub').textContent = remaining === 0
+    ? '🎉 Đã đạt mục tiêu Q! Duy trì cường độ chăm sóc.'
+    : `Còn cần thêm ${remaining} đầu mối Thân thiết · Đã hoàn thành ${pct}%`;
+
+  // ===== Priority targets: Quen biết với 3-4 tiêu chí, sort giảm dần =====
+  const priority = all
+    .filter(s => stakeholderStage(s) === 'quenbiet')
+    .map(s => ({ ...s, count: s.criteria ? s.criteria.filter(Boolean).length : 0 }))
+    .sort((a, b) => b.count - a.count);
+  document.getElementById('priorityPill').textContent = `${priority.length} người`;
+  const plist = document.getElementById('priorityList');
+  if (priority.length === 0) {
+    plist.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:16px;font-size:13px;">Không có ai ở mức "gần đạt" — đầu tư vào nhóm "Xã giao" để xây dần.</div>';
+  } else {
+    plist.innerHTML = priority.slice(0, 6).map(s => {
+      const initials = s.name.split(' ').slice(-2).map(w => w[0]).join('');
+      return `
+        <div class="priority-item" onclick="showProfile('${s.customer.id}')">
+          <div class="priority-avatar">${initials}</div>
+          <div class="priority-body">
+            <div class="priority-name">${s.name} <span style="color: var(--text-muted); font-weight: 400;">· ${s.customer.name}</span></div>
+            <div class="priority-meta">${s.role} · Sở thích: ${s.hobby.split(',')[0]}</div>
+          </div>
+          <div class="priority-score">${s.count}/8 tiêu chí · cần thêm ${5 - s.count}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== Health stats (existing) =====
   const green = customers.filter(c => c.health === 'green').length;
   const yellow = customers.filter(c => c.health === 'yellow').length;
   const red = customers.filter(c => c.health === 'red').length;
@@ -1285,6 +1494,7 @@ function showProfile(id) {
         <div class="stakeholder-role">${s.role}</div>
         <div class="stakeholder-tags">
           <span class="role-badge role-${s.type}">${s.typeLabel}</span>
+          ${stageBadge(s)}
         </div>
         <div class="stakeholder-info">
           <div class="stakeholder-info-item">🎂 <strong>${s.bday}</strong></div>
