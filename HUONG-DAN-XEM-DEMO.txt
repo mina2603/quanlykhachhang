@@ -1,0 +1,48 @@
+================================
+SEONGON BD — TOOL CUSTOMER 360°
+Bản demo nội bộ · Tháng 5/2026
+================================
+
+🎯 MỤC TIÊU
+Tool quản lý key account: tìm theo tên thương hiệu → ra full hồ sơ
+khách hàng (thông tin công ty, đầu mối liên hệ, lịch sử tương tác,
+health score, nhắc lịch chăm sóc).
+
+▶️ CÁCH XEM
+1. Tải file "customer-360.html" về máy
+2. Double-click vào file → trình duyệt sẽ tự mở
+   (hoặc chuột phải → Open with → Chrome/Safari/Edge)
+3. KHÔNG CẦN cài đặt gì, KHÔNG CẦN internet (trừ phần logo)
+
+🧪 LƯU Ý
+- Đây là bản DEMO với 4 khách hàng mẫu:
+  Vinamilk · Techcombank · Novaland · Thế Giới Di Động
+- Mục đích: duyệt giao diện, flow sử dụng, các trường thông tin
+- Mọi tương tác thêm mới sẽ lưu trên trình duyệt của người xem
+  (mỗi máy có dữ liệu riêng, KHÔNG đồng bộ với máy khác)
+
+🔍 GỢI Ý TRẢI NGHIỆM
+1. Trang chủ: xem tổng quan các KH + việc cần làm tuần này
+2. Click vào KH "Novaland" để xem trường hợp DEAL AT RISK
+3. Click vào KH "Vinamilk" để xem KH khỏe mạnh
+4. Thử thanh SEARCH ở trên: gõ "Nhung" hoặc "Hiếu" để tìm theo
+   tên đầu mối
+5. Vào 1 KH bất kỳ → bấm "+ Ghi tương tác" để thử thêm note
+
+❓ CẦN GÓP Ý VỀ
+- Giao diện đã đủ rõ ràng, dễ dùng chưa?
+- Trường thông tin về đầu mối (chức danh, vai trò, sở thích...)
+  đã đủ và đúng nhu cầu chưa?
+- Cách tính Health Score (đỏ/vàng/xanh) có hợp lý không?
+- Phần nhắc lịch chăm sóc có ý tưởng nào hay hơn không?
+- Cần thêm tính năng gì? Bỏ tính năng nào?
+
+📞 LIÊN HỆ GÓP Ý
+Chị Mina · BD Manager · SEONGON
+
+📋 SAU KHI DUYỆT
+- Phiên bản chính thức sẽ triển khai trên Lark Base (tận dụng
+  hệ sinh thái Lark sẵn có của SEONGON)
+- Có phân quyền truy cập theo người
+- Tự động đồng bộ giữa các thành viên BD team
+- Automation gửi nhắc qua Lark Messenger
