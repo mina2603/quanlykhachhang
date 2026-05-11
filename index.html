@@ -534,6 +534,20 @@
   .timeline-title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
   .timeline-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
   .timeline-who { font-size: 11px; color: var(--primary); margin-top: 4px; }
+  .interaction-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-left: 8px;
+  }
+  .tag-cv { background: #F1F5F9; color: #475569; }
+  .tag-cn { background: linear-gradient(90deg, #FCE7F3, #FBCFE8); color: #9D174D; }
 
   /* Reminders */
   .reminder {
@@ -858,6 +872,13 @@
       </select>
     </div>
     <div class="form-group">
+      <label>Tính chất <span style="color: var(--text-muted); font-weight: 400;">— chỉ tương tác Cá nhân mới góp điểm thân thiết</span></label>
+      <select id="modalTag">
+        <option value="cv">💼 Công việc — họp, báo cáo, review KPI</option>
+        <option value="cn">❤️ Cá nhân — ăn trưa, cà phê, sinh nhật, tâm sự</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label>Tiêu đề</label>
       <input type="text" id="modalTitle" placeholder="VD: Họp review tháng 5 với CMO">
     </div>
@@ -980,11 +1001,11 @@ const customers = [
       }
     ],
     interactions: [
-      { type: 'meeting', date: '08/05/2026', title: 'Review KPI tháng 4 + plan tháng 5', desc: 'Traffic organic tăng 23% MoM. Chị Hương duyệt thêm budget cho dự án content lifestyle. Next: gửi proposal mở rộng trước 15/5.', who: 'Chị Hương, Chị Nhung' },
-      { type: 'email', date: '02/05/2026', title: 'Gửi báo cáo tháng 4', desc: 'Báo cáo chi tiết kèm dashboard Looker Studio. Đã có feedback tích cực từ CMO.', who: 'Chị Hương + cc CEO' },
-      { type: 'call', date: '28/04/2026', title: 'Call nhanh với chị Nhung về crawl issue', desc: 'Phát hiện 200+ trang bị duplicate meta. Đã đẩy fix sang team kỹ thuật SEONGON.', who: 'Chị Nhung' },
-      { type: 'meeting', date: '15/04/2026', title: 'Workshop nội bộ về AI Content', desc: 'SEONGON share workshop về AI cho team Vinamilk. 25 người tham gia. Phản hồi rất tốt.', who: 'Cả team Marketing Vinamilk' },
-      { type: 'note', date: '10/04/2026', title: 'Sinh nhật chị Nhung', desc: 'Đã gửi hoa + bánh kem. Chị Nhung gọi cảm ơn rất vui.', who: 'Chị Nhung' }
+      { type: 'meeting', date: '08/05/2026', title: 'Review KPI tháng 4 + plan tháng 5', desc: 'Traffic organic tăng 23% MoM. Chị Hương duyệt thêm budget cho dự án content lifestyle. Next: gửi proposal mở rộng trước 15/5.', who: 'Chị Hương, Chị Nhung', tag: 'cv' },
+      { type: 'email', date: '02/05/2026', title: 'Gửi báo cáo tháng 4', desc: 'Báo cáo chi tiết kèm dashboard Looker Studio. Đã có feedback tích cực từ CMO.', who: 'Chị Hương + cc CEO', tag: 'cv' },
+      { type: 'call', date: '28/04/2026', title: 'Call nhanh với chị Nhung về crawl issue', desc: 'Phát hiện 200+ trang bị duplicate meta. Đã đẩy fix sang team kỹ thuật SEONGON.', who: 'Chị Nhung', tag: 'cv' },
+      { type: 'meeting', date: '15/04/2026', title: 'Workshop nội bộ về AI Content', desc: 'SEONGON share workshop về AI cho team Vinamilk. 25 người tham gia. Phản hồi rất tốt.', who: 'Cả team Marketing Vinamilk', tag: 'cv' },
+      { type: 'note', date: '10/04/2026', title: 'Sinh nhật chị Nhung', desc: 'Đã gửi hoa + bánh kem. Chị Nhung gọi cảm ơn rất vui.', who: 'Chị Nhung', tag: 'cn' }
     ],
     reminders: [
       { type: 'info', icon: '🎂', title: 'Sinh nhật chị Nhung (Trưởng phòng Digital)', desc: 'Gợi ý: hoa hồng + voucher Phúc Long (chị thích trà sữa size L)', date: 'Còn 22 ngày · 03/06/2026' },
@@ -1072,9 +1093,9 @@ const customers = [
       }
     ],
     interactions: [
-      { type: 'meeting', date: '05/05/2026', title: 'Kickoff dự án', desc: 'Đã thống nhất scope phase 1: full technical audit. Timeline 6 tuần. Anh Đạt sẽ là PIC bên Techcombank.', who: 'Anh Hiếu, Anh Đạt' },
-      { type: 'email', date: '20/04/2026', title: 'Gửi proposal phase 2 (Content)', desc: 'Đã gửi proposal Content Marketing. Anh Hiếu phản hồi sẽ xem xét sau Q2.', who: 'Anh Hiếu' },
-      { type: 'call', date: '12/04/2026', title: 'Call follow-up với anh Đạt', desc: 'Anh Đạt confirm support nội bộ. Note: anh Đạt là champion, cần chăm sóc tốt.', who: 'Anh Đạt' }
+      { type: 'meeting', date: '05/05/2026', title: 'Kickoff dự án', desc: 'Đã thống nhất scope phase 1: full technical audit. Timeline 6 tuần. Anh Đạt sẽ là PIC bên Techcombank.', who: 'Anh Hiếu, Anh Đạt', tag: 'cv' },
+      { type: 'email', date: '20/04/2026', title: 'Gửi proposal phase 2 (Content)', desc: 'Đã gửi proposal Content Marketing. Anh Hiếu phản hồi sẽ xem xét sau Q2.', who: 'Anh Hiếu', tag: 'cv' },
+      { type: 'call', date: '12/04/2026', title: 'Call follow-up với anh Đạt', desc: 'Anh Đạt confirm support nội bộ. Note: anh Đạt là champion, cần chăm sóc tốt.', who: 'Anh Đạt', tag: 'cv' }
     ],
     reminders: [
       { type: 'urgent', icon: '⚠️', title: 'CHƯA gặp CMO 25 ngày', desc: 'Anh Hiếu là decision maker chính. Nên đặt lịch gặp trong tuần này.', date: 'Khẩn cấp' },
@@ -1162,9 +1183,9 @@ const customers = [
       }
     ],
     interactions: [
-      { type: 'email', date: '01/05/2026', title: 'Gửi báo cáo tháng 4 - chưa có phản hồi', desc: 'Đã gửi báo cáo nhưng không ai phản hồi. KPI giảm liên tiếp.', who: 'Anh Tuấn + chị Hà' },
-      { type: 'note', date: '15/04/2026', title: 'Chị Hà tâm sự nội bộ', desc: 'Anh Tuấn (CMO) đang xem xét chuyển agency khác. Lý do: cảm thấy chưa proactive đủ. Cần action gấp.', who: 'Chị Hà' },
-      { type: 'meeting', date: '20/03/2026', title: 'Review Q1 - không tốt', desc: 'CMO không hài lòng performance Q1. Yêu cầu plan recovery trong 30 ngày.', who: 'Anh Tuấn, Chị Hà' }
+      { type: 'email', date: '01/05/2026', title: 'Gửi báo cáo tháng 4 - chưa có phản hồi', desc: 'Đã gửi báo cáo nhưng không ai phản hồi. KPI giảm liên tiếp.', who: 'Anh Tuấn + chị Hà', tag: 'cv' },
+      { type: 'note', date: '15/04/2026', title: 'Chị Hà tâm sự nội bộ', desc: 'Anh Tuấn (CMO) đang xem xét chuyển agency khác. Lý do: cảm thấy chưa proactive đủ. Cần action gấp.', who: 'Chị Hà', tag: 'cn' },
+      { type: 'meeting', date: '20/03/2026', title: 'Review Q1 - không tốt', desc: 'CMO không hài lòng performance Q1. Yêu cầu plan recovery trong 30 ngày.', who: 'Anh Tuấn, Chị Hà', tag: 'cv' }
     ],
     reminders: [
       { type: 'urgent', icon: '🚨', title: 'KHẨN: 30 ngày chưa gặp CMO', desc: 'Anh Tuấn đang xem xét chuyển agency. Đặt lịch gặp NGAY trong tuần.', date: 'Khẩn cấp - Hôm nay' },
@@ -1267,11 +1288,11 @@ const customers = [
       }
     ],
     interactions: [
-      { type: 'meeting', date: '09/05/2026', title: 'QBR Q1 + Roadmap Q2', desc: 'CMO duyệt budget phase 3 (Voice Search SEO + AI Overview optimization). Tăng giá trị HĐ thêm 800tr.', who: 'Anh Tùng, Anh Hiểu Em, Chị Ngọc' },
-      { type: 'email', date: '05/05/2026', title: 'Gia hạn HĐ 14 tháng', desc: 'Ký gia hạn thành công, tăng 18% giá trị.', who: 'Anh Tùng' },
-      { type: 'call', date: '03/05/2026', title: 'Brainstorm AI Overview strategy', desc: 'Bàn approach mới về SEO cho AI search. Chị Ngọc rất hào hứng.', who: 'Chị Ngọc' },
-      { type: 'meeting', date: '20/04/2026', title: 'Workshop AI Content cho team MWG', desc: 'SEONGON tổ chức workshop cho 40 người team SEO/Content MWG. Feedback xuất sắc.', who: 'Toàn team MWG SEO + Content' },
-      { type: 'note', date: '08/04/2026', title: 'Sinh nhật anh Hiểu Em', desc: 'Tặng giày chạy bộ Saucony (anh sắp chạy marathon Đà Nẵng). Rất ấn tượng.', who: 'Anh Hiểu Em' }
+      { type: 'meeting', date: '09/05/2026', title: 'QBR Q1 + Roadmap Q2', desc: 'CMO duyệt budget phase 3 (Voice Search SEO + AI Overview optimization). Tăng giá trị HĐ thêm 800tr.', who: 'Anh Tùng, Anh Hiểu Em, Chị Ngọc', tag: 'cv' },
+      { type: 'email', date: '05/05/2026', title: 'Gia hạn HĐ 14 tháng', desc: 'Ký gia hạn thành công, tăng 18% giá trị.', who: 'Anh Tùng', tag: 'cv' },
+      { type: 'call', date: '03/05/2026', title: 'Brainstorm AI Overview strategy', desc: 'Bàn approach mới về SEO cho AI search. Chị Ngọc rất hào hứng.', who: 'Chị Ngọc', tag: 'cv' },
+      { type: 'meeting', date: '20/04/2026', title: 'Workshop AI Content cho team MWG', desc: 'SEONGON tổ chức workshop cho 40 người team SEO/Content MWG. Feedback xuất sắc.', who: 'Toàn team MWG SEO + Content', tag: 'cv' },
+      { type: 'note', date: '08/04/2026', title: 'Sinh nhật anh Hiểu Em', desc: 'Tặng giày chạy bộ Saucony (anh sắp chạy marathon Đà Nẵng). Rất ấn tượng.', who: 'Anh Hiểu Em', tag: 'cn' }
     ],
     reminders: [
       { type: 'info', icon: '🎯', title: 'Đề xuất phase 4 trước Q3', desc: 'CMO sẵn lòng nghe pitch upsell. Chuẩn bị proposal Voice Search + AI.', date: 'Trước 30/06/2026' },
@@ -1509,15 +1530,18 @@ function showProfile(id) {
   `).join('');
 
   // Timeline
-  document.getElementById('timeline').innerHTML = c.interactions.map(i => `
+  document.getElementById('timeline').innerHTML = c.interactions.map(i => {
+    const tag = i.tag || 'cv';
+    const tagLabel = tag === 'cn' ? '❤️ Cá nhân' : '💼 Công việc';
+    return `
     <div class="timeline-item">
       <div class="timeline-dot ${i.type}"></div>
-      <div class="timeline-date">${i.date} · ${typeLabel(i.type)}</div>
+      <div class="timeline-date">${i.date} · ${typeLabel(i.type)} <span class="interaction-tag tag-${tag}">${tagLabel}</span></div>
       <div class="timeline-title">${i.title}</div>
       <div class="timeline-desc">${i.desc}</div>
       <div class="timeline-who">👥 ${i.who}</div>
     </div>
-  `).join('');
+  `;}).join('');
 
   // Health
   const hc = document.getElementById('healthScoreCircle');
@@ -1525,7 +1549,15 @@ function showProfile(id) {
   hc.textContent = c.healthScore;
   document.getElementById('healthLabel').textContent = c.health === 'green' ? 'Khỏe mạnh' : c.health === 'yellow' ? 'Cần chú ý' : 'Rủi ro cao';
   document.getElementById('healthReason').textContent = c.healthReason;
-  document.getElementById('healthFactors').innerHTML = c.healthFactors.map(f => `
+  // Auto-compute relationship factor: count Cá nhân interactions
+  const personalCount = c.interactions.filter(i => i.tag === 'cn').length;
+  const personalGood = personalCount >= 2;
+  const personalFactor = {
+    label: '❤️ Tương tác Cá nhân',
+    value: `${personalCount} lần`,
+    good: personalGood
+  };
+  document.getElementById('healthFactors').innerHTML = [...c.healthFactors, personalFactor].map(f => `
     <div class="health-factor">
       <span>${f.label}</span>
       <span class="health-factor-value" style="color: ${f.good ? 'var(--green)' : 'var(--red)'};">${f.value}</span>
@@ -1616,9 +1648,12 @@ function closeInteractionModal() {
   document.getElementById('modalTitle').value = '';
   document.getElementById('modalDesc').value = '';
   document.getElementById('modalWho').value = '';
+  document.getElementById('modalTag').value = 'cv';
+  document.getElementById('modalType').value = 'meeting';
 }
 function saveInteraction() {
   const type = document.getElementById('modalType').value;
+  const tag = document.getElementById('modalTag').value;
   const title = document.getElementById('modalTitle').value.trim();
   const desc = document.getElementById('modalDesc').value.trim();
   const who = document.getElementById('modalWho').value.trim();
@@ -1626,12 +1661,13 @@ function saveInteraction() {
 
   const c = customers.find(x => x.id === currentCustomerId);
   const today = new Date().toLocaleDateString('vi-VN');
-  const item = { type, date: today, title, desc, who };
+  const item = { type, date: today, title, desc, who, tag };
   c.interactions.unshift(item);
   saveAddedInteraction(currentCustomerId, item);
   closeInteractionModal();
   showProfile(currentCustomerId);
-  showToast('✅ Đã lưu tương tác mới — lưu trên máy chị, sẽ giữ lại khi tải lại trang');
+  const tagMsg = tag === 'cn' ? '❤️ Tương tác Cá nhân — góp điểm thân thiết' : '💼 Tương tác Công việc';
+  showToast(`✅ Đã lưu · ${tagMsg}`);
 }
 
 // Boot
