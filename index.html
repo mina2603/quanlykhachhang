@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEONGON BD — Customer 360°</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1F4E79;
+    --primary-light: #2E6BA8;
+    --accent: #E87722;
+    --bg: #F5F7FA;
+    --card: #FFFFFF;
+    --text: #1A2332;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --green: #16A34A;
+    --yellow: #EAB308;
+    --red: #DC2626;
+    --blue-soft: #EFF6FF;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 14px;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 16px 32px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .logo-mark {
+    background: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-mark img { height: 24px; width: auto; display: block; }
+  .logo-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.3);
+  }
+  .search-wrap {
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px 16px 10px 42px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    background: rgba(255,255,255,0.95);
+    color: var(--text);
+    outline: none;
+  }
+  .search-input:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+  .search-suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    max-height: 320px;
+    overflow-y: auto;
+    display: none;
+    color: var(--text);
+  }
+  .search-suggestions.active { display: block; }
+  .suggestion-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .suggestion-item:last-child { border-bottom: none; }
+  .suggestion-item:hover { background: var(--blue-soft); }
+  .suggestion-logo {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    background: white;
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .suggestion-logo img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
+  .suggestion-meta { color: var(--text-muted); font-size: 12px; }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+  }
+  .user-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+  }
+
+  /* Main layout */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+  .breadcrumb {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breadcrumb a { color: var(--primary); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* Home view */
+  .home-hero {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+  .home-hero h1 {
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .home-hero p {
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+  }
+  .stat-card.green { border-left-color: var(--green); }
+  .stat-card.yellow { border-left-color: var(--yellow); }
+  .stat-card.red { border-left-color: var(--red); }
+  .stat-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 28px; font-weight: 700; margin-top: 4px; color: var(--text); }
+  .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title .pill {
+    background: var(--blue-soft);
+    color: var(--primary);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .customer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .customer-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .customer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+  }
+  .customer-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .customer-logo {
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    background: white;
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .customer-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+  .customer-card-name { font-weight: 600; font-size: 15px; }
+  .customer-card-industry { color: var(--text-muted); font-size: 12px; }
+
+  .health-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .health-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .health-green { background: #DCFCE7; color: #166534; }
+  .health-green .health-dot { background: var(--green); }
+  .health-yellow { background: #FEF3C7; color: #854D0E; }
+  .health-yellow .health-dot { background: var(--yellow); }
+  .health-red { background: #FEE2E2; color: #991B1B; }
+  .health-red .health-dot { background: var(--red); }
+
+  .customer-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Profile view */
+  .profile-hero {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .profile-logo {
+    width: 80px; height: 80px;
+    border-radius: 14px;
+    background: white;
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 22px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .profile-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+  .profile-info { flex: 1; }
+  .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .profile-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .profile-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    background: var(--blue-soft);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { background: var(--primary-light); }
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+  .btn-outline:hover { background: var(--blue-soft); }
+  .btn-accent { background: var(--accent); }
+  .btn-accent:hover { background: #D26A1E; }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title-icon { display: flex; align-items: center; gap: 8px; }
+
+  /* Stakeholders */
+  .stakeholder-list { display: grid; gap: 12px; }
+  .stakeholder {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: all 0.15s;
+  }
+  .stakeholder:hover { border-color: var(--primary-light); background: #FAFBFC; }
+  .stakeholder-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .stakeholder-body { flex: 1; }
+  .stakeholder-name { font-weight: 600; font-size: 14px; }
+  .stakeholder-role { color: var(--text-muted); font-size: 12px; margin-bottom: 6px; }
+  .stakeholder-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .role-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .role-champion { background: #DCFCE7; color: #166534; }
+  .role-decision { background: #FEE2E2; color: #991B1B; }
+  .role-influencer { background: #DBEAFE; color: #1E40AF; }
+  .role-blocker { background: #F3E8FF; color: #6B21A8; }
+  .role-enduser { background: #F1F5F9; color: #475569; }
+  .stakeholder-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .stakeholder-info-item { display: flex; gap: 6px; align-items: center; }
+  .stakeholder-info-item strong { color: var(--text); font-weight: 500; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-dot {
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid white;
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+  .timeline-dot.email { background: #2563EB; box-shadow: 0 0 0 1px #2563EB; }
+  .timeline-dot.meeting { background: var(--green); box-shadow: 0 0 0 1px var(--green); }
+  .timeline-dot.call { background: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .timeline-dot.note { background: var(--text-muted); box-shadow: 0 0 0 1px var(--text-muted); }
+  .timeline-date { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .timeline-title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+  .timeline-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .timeline-who { font-size: 11px; color: var(--primary); margin-top: 4px; }
+
+  /* Reminders */
+  .reminder {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #FFFBEB;
+    border-left: 3px solid var(--yellow);
+    margin-bottom: 10px;
+  }
+  .reminder.urgent { background: #FEF2F2; border-left-color: var(--red); }
+  .reminder.info { background: var(--blue-soft); border-left-color: var(--primary); }
+  .reminder-icon { font-size: 20px; }
+  .reminder-body { flex: 1; }
+  .reminder-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+  .reminder-desc { font-size: 12px; color: var(--text-muted); }
+  .reminder-date { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+  /* Health card */
+  .health-card-big {
+    text-align: center;
+    padding: 24px;
+  }
+  .health-score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+  }
+  .health-score-circle.green { background: linear-gradient(135deg, #16A34A, #4ADE80); }
+  .health-score-circle.yellow { background: linear-gradient(135deg, #EAB308, #FDE047); }
+  .health-score-circle.red { background: linear-gradient(135deg, #DC2626, #F87171); }
+  .health-factors {
+    text-align: left;
+    margin-top: 16px;
+  }
+  .health-factor {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .health-factor:last-child { border-bottom: none; }
+  .health-factor-value { font-weight: 600; }
+
+  /* Info grid */
+  .info-list { display: grid; gap: 10px; }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { color: var(--text-muted); }
+  .info-value { font-weight: 500; text-align: right; }
+
+  /* Hidden */
+  .hidden { display: none !important; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* Demo banner */
+  .demo-banner {
+    background: linear-gradient(90deg, #FEF3C7, #FDE68A);
+    color: #78350F;
+    padding: 8px 32px;
+    font-size: 13px;
+    text-align: center;
+    border-bottom: 1px solid #FCD34D;
+  }
+  .demo-banner strong { font-weight: 600; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    font-size: 13px;
+    z-index: 300;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.25s;
+    pointer-events: none;
+    max-width: 380px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast strong { color: var(--accent); }
+
+  /* Add interaction modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 500px;
+    max-width: 90vw;
+  }
+  .modal h3 { margin-bottom: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+  @media (max-width: 900px) {
+    .profile-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner">
+  🧪 <strong>Bản demo nội bộ</strong> · Dữ liệu mẫu (4 KH minh họa) · Mọi tương tác chị thêm sẽ được lưu trên máy chị · Phiên bản chính thức sẽ chạy trên Lark Base
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo" onclick="showHome()">
+      <div class="logo-mark">
+        <img src="https://seongon.com/wp-content/uploads/2022/11/Logo-Seongon.png" alt="SEONGON" onerror="this.parentElement.innerHTML='<span style=&quot;color:var(--primary);font-weight:800;&quot;>SEONGON</span>'">
+      </div>
+      <div class="logo-divider"></div>
+      <span>Customer 360°</span>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Tìm khách hàng theo tên thương hiệu, ngành hoặc đầu mối..." autocomplete="off">
+      <div id="searchSuggestions" class="search-suggestions"></div>
+    </div>
+    <div class="user-chip">
+      <div class="user-avatar">M</div>
+      <span style="font-size: 13px;">Chị Mina (BD Manager)</span>
+    </div>
+  </div>
+</header>
+
+<!-- HOME VIEW -->
+<div id="homeView" class="container">
+  <div class="home-hero">
+    <h1>Xin chào chị Mina 👋</h1>
+    <p>Hôm nay <span id="todayDate"></span> · Quản lý <strong id="totalCustomers">0</strong> key accounts</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card green">
+      <div class="stat-label">Khỏe mạnh</div>
+      <div class="stat-value" id="statGreen">0</div>
+      <div class="stat-sub">Quan hệ tốt, KPI đạt</div>
+    </div>
+    <div class="stat-card yellow">
+      <div class="stat-label">Cần chú ý</div>
+      <div class="stat-value" id="statYellow">0</div>
+      <div class="stat-sub">Lâu chưa liên lạc / KPI giảm</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Rủi ro cao</div>
+      <div class="stat-value" id="statRed">0</div>
+      <div class="stat-sub">Cần can thiệp ngay</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Nhắc lịch tuần này</div>
+      <div class="stat-value" id="statReminders">0</div>
+      <div class="stat-sub">Sinh nhật / kỷ niệm</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    🔔 Việc cần làm tuần này
+    <span class="pill" id="upcomingPill">0 việc</span>
+  </div>
+  <div class="card" id="upcomingCard">
+    <div id="upcomingList"></div>
+  </div>
+
+  <div class="section-title">
+    📁 Danh sách khách hàng
+    <span class="pill" id="customerCountPill">0 KH</span>
+  </div>
+  <div id="customerGrid" class="customer-grid"></div>
+</div>
+
+<!-- PROFILE VIEW -->
+<div id="profileView" class="container hidden">
+  <div class="breadcrumb">
+    <a onclick="showHome()">← Danh sách KH</a>
+    <span>/</span>
+    <span id="breadcrumbName"></span>
+  </div>
+
+  <div class="profile-hero">
+    <div class="profile-logo" id="profileLogo"></div>
+    <div class="profile-info">
+      <div class="profile-name" id="profileName"></div>
+      <div class="profile-meta" id="profileMeta"></div>
+      <div class="profile-tags" id="profileTags"></div>
+      <div class="quick-actions">
+        <button class="btn" onclick="openInteractionModal()">+ Ghi tương tác</button>
+        <button class="btn btn-outline" onclick="showToast('📧 Tính năng <strong>Gửi email</strong> sẽ tích hợp Gmail/Outlook ở phase Lark — gửi trực tiếp từ profile KH')">📧 Gửi email</button>
+        <button class="btn btn-outline" onclick="showToast('📅 Tính năng <strong>Đặt lịch</strong> sẽ tích hợp Google Calendar/Lark Calendar ở phase tới')">📅 Đặt lịch</button>
+        <button class="btn btn-accent" onclick="showToast('🎁 Tính năng <strong>Gửi quà</strong> — gợi ý quà tự động theo sở thích đầu mối + tích hợp đặt hàng (hoa, bánh, voucher)')">🎁 Gửi quà</button>
+      </div>
+    </div>
+    <div id="profileHealthBadge"></div>
+  </div>
+
+  <div class="profile-grid">
+    <div>
+      <div class="card">
+        <div class="card-title">
+          <span class="card-title-icon">👥 Đầu mối liên hệ</span>
+          <span class="pill" id="stakeholderCount"></span>
+        </div>
+        <div class="stakeholder-list" id="stakeholderList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span class="card-title-icon">📜 Lịch sử tương tác</span>
+          <button class="btn" onclick="openInteractionModal()" style="padding: 4px 10px; font-size: 12px;">+ Thêm</button>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card health-card-big">
+        <div class="card-title" style="justify-content: center;">💚 Health Score</div>
+        <div id="healthScoreCircle" class="health-score-circle"></div>
+        <div id="healthLabel" style="font-weight: 600; font-size: 15px;"></div>
+        <div id="healthReason" style="color: var(--text-muted); font-size: 12px; margin-top: 4px;"></div>
+        <div class="health-factors" id="healthFactors"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔔 Nhắc lịch chăm sóc</div>
+        <div id="remindersList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ℹ️ Thông tin công ty</div>
+        <div class="info-list" id="companyInfo"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD INTERACTION MODAL -->
+<div id="interactionModal" class="modal-overlay">
+  <div class="modal">
+    <h3>Ghi tương tác mới</h3>
+    <div class="form-group">
+      <label>Loại</label>
+      <select id="modalType">
+        <option value="meeting">Họp/Gặp mặt</option>
+        <option value="call">Gọi điện</option>
+        <option value="email">Email</option>
+        <option value="note">Ghi chú</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tiêu đề</label>
+      <input type="text" id="modalTitle" placeholder="VD: Họp review tháng 5 với CMO">
+    </div>
+    <div class="form-group">
+      <label>Nội dung</label>
+      <textarea id="modalDesc" rows="4" placeholder="Nội dung chính, quyết định, next step..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Đầu mối tham gia</label>
+      <input type="text" id="modalWho" placeholder="VD: Anh Hùng (CMO), Chị Mai (Trưởng phòng MKT)">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeInteractionModal()">Hủy</button>
+      <button class="btn" onclick="saveInteraction()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Prototype demo · SEONGON BD Customer 360° · Dữ liệu mẫu để chị xem flow
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ====== MOCK DATA ======
+const customers = [
+  {
+    id: 'vinamilk',
+    name: 'Vinamilk',
+    fullName: 'Công ty Cổ phần Sữa Việt Nam',
+    industry: 'FMCG - Thực phẩm',
+    website: 'vinamilk.com.vn',
+    logoDomain: 'vinamilk.com.vn',
+    size: '10,000+ nhân viên',
+    address: 'Quận 7, TP.HCM',
+    startDate: '15/03/2022',
+    contractValue: '2.4 tỷ/năm',
+    currentService: 'SEO Total + Content Marketing',
+    health: 'green',
+    healthScore: 88,
+    healthReason: 'Quan hệ chặt chẽ, KPI vượt mục tiêu Q1',
+    healthFactors: [
+      { label: 'Tần suất liên lạc 30 ngày', value: '12 lần', good: true },
+      { label: 'KPI campaign hiện tại', value: '+18% target', good: true },
+      { label: 'NPS gần nhất', value: '9/10', good: true },
+      { label: 'Hợp đồng còn lại', value: '8 tháng', good: true }
+    ],
+    tags: ['Khách lớn', 'Hợp tác lâu năm', 'Champion: CMO'],
+    stakeholders: [
+      {
+        name: 'Nguyễn Thị Minh Hương',
+        role: 'Giám đốc Marketing',
+        type: 'decision',
+        typeLabel: 'Decision Maker',
+        bday: '14/08',
+        hobby: 'Yoga, đọc sách kinh doanh, cà phê đen không đường',
+        channel: 'Email + lịch trực tiếp',
+        phone: '0912.xxx.xxx',
+        email: 'huong.nguyen@vinamilk.com.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Trần Văn Phúc',
+        role: 'CEO',
+        type: 'decision',
+        typeLabel: 'Decision Maker',
+        bday: '22/11',
+        hobby: 'Golf, sưu tầm rượu vang Pháp',
+        channel: 'Qua thư ký - Chị Lan',
+        phone: '028.xxx.xxxx',
+        email: 'phuc.tran@vinamilk.com.vn',
+        zalo: 'Không'
+      },
+      {
+        name: 'Lê Thị Hồng Nhung',
+        role: 'Trưởng phòng Digital Marketing',
+        type: 'champion',
+        typeLabel: 'Champion',
+        bday: '03/05',
+        hobby: 'Du lịch, ẩm thực Nhật, trà sữa Phúc Long size L',
+        channel: 'Zalo + email',
+        phone: '0987.xxx.xxx',
+        email: 'nhung.le@vinamilk.com.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Phạm Quốc Bảo',
+        role: 'Trưởng phòng Mua hàng',
+        type: 'influencer',
+        typeLabel: 'Influencer',
+        bday: '17/09',
+        hobby: 'Bóng đá MU, bia Heineken',
+        channel: 'Gọi điện trực tiếp',
+        phone: '0934.xxx.xxx',
+        email: 'bao.pham@vinamilk.com.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Vũ Thị Thu Trang',
+        role: 'Nhân viên SEO Inhouse',
+        type: 'enduser',
+        typeLabel: 'End User',
+        bday: '28/02',
+        hobby: 'Học MOZ, đọc Search Engine Journal',
+        channel: 'Slack + Zalo',
+        phone: '0978.xxx.xxx',
+        email: 'trang.vu@vinamilk.com.vn',
+        zalo: 'Có'
+      }
+    ],
+    interactions: [
+      { type: 'meeting', date: '08/05/2026', title: 'Review KPI tháng 4 + plan tháng 5', desc: 'Traffic organic tăng 23% MoM. Chị Hương duyệt thêm budget cho dự án content lifestyle. Next: gửi proposal mở rộng trước 15/5.', who: 'Chị Hương, Chị Nhung' },
+      { type: 'email', date: '02/05/2026', title: 'Gửi báo cáo tháng 4', desc: 'Báo cáo chi tiết kèm dashboard Looker Studio. Đã có feedback tích cực từ CMO.', who: 'Chị Hương + cc CEO' },
+      { type: 'call', date: '28/04/2026', title: 'Call nhanh với chị Nhung về crawl issue', desc: 'Phát hiện 200+ trang bị duplicate meta. Đã đẩy fix sang team kỹ thuật SEONGON.', who: 'Chị Nhung' },
+      { type: 'meeting', date: '15/04/2026', title: 'Workshop nội bộ về AI Content', desc: 'SEONGON share workshop về AI cho team Vinamilk. 25 người tham gia. Phản hồi rất tốt.', who: 'Cả team Marketing Vinamilk' },
+      { type: 'note', date: '10/04/2026', title: 'Sinh nhật chị Nhung', desc: 'Đã gửi hoa + bánh kem. Chị Nhung gọi cảm ơn rất vui.', who: 'Chị Nhung' }
+    ],
+    reminders: [
+      { type: 'info', icon: '🎂', title: 'Sinh nhật chị Nhung (Trưởng phòng Digital)', desc: 'Gợi ý: hoa hồng + voucher Phúc Long (chị thích trà sữa size L)', date: 'Còn 22 ngày · 03/06/2026' },
+      { type: 'info', icon: '📅', title: 'Kỷ niệm 4 năm hợp tác', desc: 'Tổ chức ăn tối thân mật với CMO + CEO', date: 'Còn 36 ngày · 15/06/2026' }
+    ]
+  },
+  {
+    id: 'techcombank',
+    name: 'Techcombank',
+    fullName: 'Ngân hàng TMCP Kỹ thương Việt Nam',
+    industry: 'Tài chính - Ngân hàng',
+    website: 'techcombank.com',
+    logoDomain: 'techcombank.com',
+    size: '12,000+ nhân viên',
+    address: 'Quận Hai Bà Trưng, Hà Nội',
+    startDate: '01/02/2026',
+    contractValue: '1.8 tỷ/năm (mới ký)',
+    currentService: 'SEO Audit + Technical SEO',
+    health: 'yellow',
+    healthScore: 62,
+    healthReason: 'Mới hợp tác, cần củng cố quan hệ với CMO',
+    healthFactors: [
+      { label: 'Tần suất liên lạc 30 ngày', value: '4 lần', good: false },
+      { label: 'KPI campaign hiện tại', value: 'Đang baseline', good: true },
+      { label: 'NPS gần nhất', value: 'Chưa khảo sát', good: false },
+      { label: 'Hợp đồng còn lại', value: '10 tháng', good: true }
+    ],
+    tags: ['Mới ký HĐ', 'Tiềm năng upsell', 'Cần xây trust'],
+    stakeholders: [
+      {
+        name: 'Đỗ Trung Hiếu',
+        role: 'Giám đốc Marketing & Branding',
+        type: 'decision',
+        typeLabel: 'Decision Maker',
+        bday: '09/12',
+        hobby: 'Tennis, đọc HBR, cà phê pour-over',
+        channel: 'Lịch hẹn qua thư ký',
+        phone: '0901.xxx.xxx',
+        email: 'hieu.do@techcombank.com',
+        zalo: 'Không'
+      },
+      {
+        name: 'Nguyễn Lan Anh',
+        role: 'Phó Giám đốc Đầu tư',
+        type: 'influencer',
+        typeLabel: 'Influencer',
+        bday: '21/07',
+        hobby: 'Đầu tư chứng khoán, sách Warren Buffett',
+        channel: 'Email formal',
+        phone: '0913.xxx.xxx',
+        email: 'lananh.nguyen@techcombank.com',
+        zalo: 'Không'
+      },
+      {
+        name: 'Trần Hữu Đạt',
+        role: 'Trưởng phòng Digital',
+        type: 'champion',
+        typeLabel: 'Champion',
+        bday: '15/05',
+        hobby: 'Esports, cà phê sữa đá',
+        channel: 'Zalo + Slack',
+        phone: '0966.xxx.xxx',
+        email: 'dat.tran@techcombank.com',
+        zalo: 'Có'
+      },
+      {
+        name: 'Hoàng Thị Mai',
+        role: 'Chuyên viên SEO',
+        type: 'enduser',
+        typeLabel: 'End User',
+        bday: '04/10',
+        hobby: 'Yoga, đọc sách',
+        channel: 'Email + Zalo',
+        phone: '0978.xxx.xxx',
+        email: 'mai.hoang@techcombank.com',
+        zalo: 'Có'
+      }
+    ],
+    interactions: [
+      { type: 'meeting', date: '05/05/2026', title: 'Kickoff dự án', desc: 'Đã thống nhất scope phase 1: full technical audit. Timeline 6 tuần. Anh Đạt sẽ là PIC bên Techcombank.', who: 'Anh Hiếu, Anh Đạt' },
+      { type: 'email', date: '20/04/2026', title: 'Gửi proposal phase 2 (Content)', desc: 'Đã gửi proposal Content Marketing. Anh Hiếu phản hồi sẽ xem xét sau Q2.', who: 'Anh Hiếu' },
+      { type: 'call', date: '12/04/2026', title: 'Call follow-up với anh Đạt', desc: 'Anh Đạt confirm support nội bộ. Note: anh Đạt là champion, cần chăm sóc tốt.', who: 'Anh Đạt' }
+    ],
+    reminders: [
+      { type: 'urgent', icon: '⚠️', title: 'CHƯA gặp CMO 25 ngày', desc: 'Anh Hiếu là decision maker chính. Nên đặt lịch gặp trong tuần này.', date: 'Khẩn cấp' },
+      { type: 'info', icon: '🎂', title: 'Sinh nhật anh Đạt (Champion)', desc: 'Gợi ý: voucher gaming gear (anh thích esports)', date: 'Còn 4 ngày · 15/05/2026' }
+    ]
+  },
+  {
+    id: 'novaland',
+    name: 'Novaland',
+    fullName: 'Công ty Cổ phần Tập đoàn Đầu tư Địa ốc No Va',
+    industry: 'Bất động sản',
+    website: 'novaland.com.vn',
+    logoDomain: 'novaland.com.vn',
+    size: '3,500+ nhân viên',
+    address: 'Quận 1, TP.HCM',
+    startDate: '20/06/2024',
+    contractValue: '3.6 tỷ/năm',
+    currentService: 'SEO Total + Performance Ads',
+    health: 'red',
+    healthScore: 38,
+    healthReason: 'KH lâu không phản hồi, KPI giảm 2 tháng liên tiếp',
+    healthFactors: [
+      { label: 'Tần suất liên lạc 30 ngày', value: '1 lần', good: false },
+      { label: 'KPI campaign hiện tại', value: '-15% target', good: false },
+      { label: 'NPS gần nhất', value: '6/10', good: false },
+      { label: 'Hợp đồng còn lại', value: '3 tháng', good: false }
+    ],
+    tags: ['⚠️ Deal at risk', 'Cần can thiệp', 'HĐ sắp hết'],
+    stakeholders: [
+      {
+        name: 'Lê Minh Tuấn',
+        role: 'Giám đốc Marketing',
+        type: 'blocker',
+        typeLabel: 'Blocker',
+        bday: '11/03',
+        hobby: 'Golf, xe hơi',
+        channel: 'Khó tiếp cận, qua thư ký',
+        phone: '0938.xxx.xxx',
+        email: 'tuan.le@novaland.com.vn',
+        zalo: 'Không'
+      },
+      {
+        name: 'Phạm Thị Hà',
+        role: 'Trưởng phòng Marketing',
+        type: 'champion',
+        typeLabel: 'Champion',
+        bday: '27/08',
+        hobby: 'Du lịch, nhiếp ảnh, sushi',
+        channel: 'Zalo (rất thân thiện)',
+        phone: '0987.xxx.xxx',
+        email: 'ha.pham@novaland.com.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Nguyễn Văn Khánh',
+        role: 'Trưởng phòng Mua hàng',
+        type: 'influencer',
+        typeLabel: 'Influencer',
+        bday: '02/06',
+        hobby: 'Bóng đá Arsenal',
+        channel: 'Email formal',
+        phone: '0901.xxx.xxx',
+        email: 'khanh.nguyen@novaland.com.vn',
+        zalo: 'Không'
+      },
+      {
+        name: 'Trần Thị Linh',
+        role: 'Chuyên viên Performance',
+        type: 'enduser',
+        typeLabel: 'End User',
+        bday: '19/01',
+        hobby: 'Đọc sách marketing, cà phê',
+        channel: 'Slack',
+        phone: '0966.xxx.xxx',
+        email: 'linh.tran@novaland.com.vn',
+        zalo: 'Có'
+      }
+    ],
+    interactions: [
+      { type: 'email', date: '01/05/2026', title: 'Gửi báo cáo tháng 4 - chưa có phản hồi', desc: 'Đã gửi báo cáo nhưng không ai phản hồi. KPI giảm liên tiếp.', who: 'Anh Tuấn + chị Hà' },
+      { type: 'note', date: '15/04/2026', title: 'Chị Hà tâm sự nội bộ', desc: 'Anh Tuấn (CMO) đang xem xét chuyển agency khác. Lý do: cảm thấy chưa proactive đủ. Cần action gấp.', who: 'Chị Hà' },
+      { type: 'meeting', date: '20/03/2026', title: 'Review Q1 - không tốt', desc: 'CMO không hài lòng performance Q1. Yêu cầu plan recovery trong 30 ngày.', who: 'Anh Tuấn, Chị Hà' }
+    ],
+    reminders: [
+      { type: 'urgent', icon: '🚨', title: 'KHẨN: 30 ngày chưa gặp CMO', desc: 'Anh Tuấn đang xem xét chuyển agency. Đặt lịch gặp NGAY trong tuần.', date: 'Khẩn cấp - Hôm nay' },
+      { type: 'urgent', icon: '📋', title: 'Hợp đồng hết hạn trong 3 tháng', desc: 'Cần chuẩn bị plan gia hạn + showcase value', date: '15/08/2026' },
+      { type: 'info', icon: '🎂', title: 'Sinh nhật chị Hà (Champion duy nhất)', desc: 'BẮT BUỘC chăm sóc kỹ. Chị Hà thích sushi - đặt set Tomi cao cấp.', date: 'Còn 108 ngày · 27/08/2026' }
+    ]
+  },
+  {
+    id: 'tgdd',
+    name: 'Thế Giới Di Động',
+    fullName: 'Công ty Cổ phần Đầu tư Thế Giới Di Động (MWG)',
+    industry: 'Bán lẻ - Điện máy',
+    website: 'thegioididong.com',
+    logoDomain: 'thegioididong.com',
+    size: '60,000+ nhân viên',
+    address: 'Quận Tân Bình, TP.HCM',
+    startDate: '10/09/2023',
+    contractValue: '4.2 tỷ/năm',
+    currentService: 'SEO Total + Local SEO + E-commerce SEO',
+    health: 'green',
+    healthScore: 92,
+    healthReason: 'Top performer, KH ruột, đang upsell phase 3',
+    healthFactors: [
+      { label: 'Tần suất liên lạc 30 ngày', value: '18 lần', good: true },
+      { label: 'KPI campaign hiện tại', value: '+27% target', good: true },
+      { label: 'NPS gần nhất', value: '10/10', good: true },
+      { label: 'Hợp đồng còn lại', value: '14 tháng (vừa gia hạn)', good: true }
+    ],
+    tags: ['VIP', 'Top revenue', 'Upsell-ready', 'Reference account'],
+    stakeholders: [
+      {
+        name: 'Đoàn Văn Hiểu Em',
+        role: 'Giám đốc E-commerce',
+        type: 'champion',
+        typeLabel: 'Champion',
+        bday: '08/04',
+        hobby: 'Chạy bộ marathon, cà phê specialty',
+        channel: 'Zalo + Slack (rất responsive)',
+        phone: '0908.xxx.xxx',
+        email: 'hieuem.doan@mwg.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Trần Huy Thanh Tùng',
+        role: 'CMO',
+        type: 'decision',
+        typeLabel: 'Decision Maker',
+        bday: '30/06',
+        hobby: 'Bơi lội, đọc sách lãnh đạo',
+        channel: 'Email + meeting hàng tháng',
+        phone: '0912.xxx.xxx',
+        email: 'tung.tran@mwg.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Nguyễn Thị Bích Ngọc',
+        role: 'Trưởng phòng SEO',
+        type: 'champion',
+        typeLabel: 'Champion',
+        bday: '12/11',
+        hobby: 'Học AI/ML, cà phê Highland size L ít đá',
+        channel: 'Zalo + Slack',
+        phone: '0987.xxx.xxx',
+        email: 'ngoc.nguyen@mwg.vn',
+        zalo: 'Có'
+      },
+      {
+        name: 'Lê Quang Thiện',
+        role: 'Giám đốc Đầu tư',
+        type: 'influencer',
+        typeLabel: 'Influencer',
+        bday: '25/02',
+        hobby: 'Đầu tư crypto, sách kinh tế',
+        channel: 'Email formal',
+        phone: '0938.xxx.xxx',
+        email: 'thien.le@mwg.vn',
+        zalo: 'Không'
+      },
+      {
+        name: 'Vũ Minh Đức',
+        role: 'Senior SEO Specialist',
+        type: 'enduser',
+        typeLabel: 'End User',
+        bday: '07/07',
+        hobby: 'Gaming, trà sữa Koi',
+        channel: 'Slack 24/7',
+        phone: '0978.xxx.xxx',
+        email: 'duc.vu@mwg.vn',
+        zalo: 'Có'
+      }
+    ],
+    interactions: [
+      { type: 'meeting', date: '09/05/2026', title: 'QBR Q1 + Roadmap Q2', desc: 'CMO duyệt budget phase 3 (Voice Search SEO + AI Overview optimization). Tăng giá trị HĐ thêm 800tr.', who: 'Anh Tùng, Anh Hiểu Em, Chị Ngọc' },
+      { type: 'email', date: '05/05/2026', title: 'Gia hạn HĐ 14 tháng', desc: 'Ký gia hạn thành công, tăng 18% giá trị.', who: 'Anh Tùng' },
+      { type: 'call', date: '03/05/2026', title: 'Brainstorm AI Overview strategy', desc: 'Bàn approach mới về SEO cho AI search. Chị Ngọc rất hào hứng.', who: 'Chị Ngọc' },
+      { type: 'meeting', date: '20/04/2026', title: 'Workshop AI Content cho team MWG', desc: 'SEONGON tổ chức workshop cho 40 người team SEO/Content MWG. Feedback xuất sắc.', who: 'Toàn team MWG SEO + Content' },
+      { type: 'note', date: '08/04/2026', title: 'Sinh nhật anh Hiểu Em', desc: 'Tặng giày chạy bộ Saucony (anh sắp chạy marathon Đà Nẵng). Rất ấn tượng.', who: 'Anh Hiểu Em' }
+    ],
+    reminders: [
+      { type: 'info', icon: '🎯', title: 'Đề xuất phase 4 trước Q3', desc: 'CMO sẵn lòng nghe pitch upsell. Chuẩn bị proposal Voice Search + AI.', date: 'Trước 30/06/2026' },
+      { type: 'info', icon: '🏃', title: 'Marathon Đà Nẵng - Anh Hiểu Em chạy', desc: 'Gửi lời chúc + có thể tài trợ áo SEONGON co-brand', date: '15/06/2026' },
+      { type: 'info', icon: '🎂', title: 'Sinh nhật CMO Tùng', desc: 'Anh Tùng thích sách - tặng bộ sách Harvard Business Press', date: 'Còn 50 ngày · 30/06/2026' }
+    ]
+  }
+];
+
+// ====== STATE ======
+let currentView = 'home';
+let currentCustomerId = null;
+
+// ====== HELPERS ======
+function logoHtml(c) {
+  const initials = c.name.substr(0,2).toUpperCase();
+  if (!c.logoDomain) return initials;
+  const url = `https://logo.clearbit.com/${c.logoDomain}`;
+  return `<img src="${url}" alt="${c.name}" onerror="this.parentElement.textContent='${initials}'">`;
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ====== PERSISTENCE (localStorage) ======
+const STORAGE_KEY = 'seongon_bd_interactions_v1';
+function loadAddedInteractions() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const added = JSON.parse(raw);
+    Object.keys(added).forEach(cid => {
+      const c = customers.find(x => x.id === cid);
+      if (c) c.interactions = [...added[cid], ...c.interactions];
+    });
+  } catch (e) { console.warn('Load failed', e); }
+}
+function saveAddedInteraction(cid, item) {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const added = raw ? JSON.parse(raw) : {};
+    if (!added[cid]) added[cid] = [];
+    added[cid].unshift(item);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(added));
+  } catch (e) { console.warn('Save failed', e); }
+}
+
+// ====== INIT ======
+function init() {
+  loadAddedInteractions();
+  const today = new Date();
+  document.getElementById('todayDate').textContent = today.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+  document.getElementById('totalCustomers').textContent = customers.length;
+  renderHome();
+  setupSearch();
+}
+
+function renderHome() {
+  const green = customers.filter(c => c.health === 'green').length;
+  const yellow = customers.filter(c => c.health === 'yellow').length;
+  const red = customers.filter(c => c.health === 'red').length;
+  document.getElementById('statGreen').textContent = green;
+  document.getElementById('statYellow').textContent = yellow;
+  document.getElementById('statRed').textContent = red;
+
+  // Upcoming reminders across all customers
+  const allReminders = [];
+  customers.forEach(c => c.reminders.forEach(r => allReminders.push({ ...r, customer: c.name, customerId: c.id })));
+  const urgent = allReminders.filter(r => r.type === 'urgent');
+  const upcoming = allReminders.slice(0, 5);
+
+  document.getElementById('statReminders').textContent = allReminders.length;
+  document.getElementById('upcomingPill').textContent = `${urgent.length} khẩn + ${allReminders.length - urgent.length} sắp tới`;
+
+  document.getElementById('upcomingList').innerHTML = upcoming.map(r => `
+    <div class="reminder ${r.type}">
+      <div class="reminder-icon">${r.icon}</div>
+      <div class="reminder-body">
+        <div class="reminder-title">${r.title} <span style="color: var(--primary); font-weight: 500;">· ${r.customer}</span></div>
+        <div class="reminder-desc">${r.desc}</div>
+        <div class="reminder-date">${r.date}</div>
+      </div>
+      <button class="btn btn-outline" style="padding: 4px 10px; font-size: 12px; align-self: center;" onclick="showProfile('${r.customerId}')">Xem KH →</button>
+    </div>
+  `).join('');
+
+  document.getElementById('customerCountPill').textContent = `${customers.length} KH`;
+  document.getElementById('customerGrid').innerHTML = customers.map(c => `
+    <div class="customer-card" onclick="showProfile('${c.id}')">
+      <div class="customer-card-header">
+        <div class="customer-logo">${logoHtml(c)}</div>
+        <div style="flex: 1;">
+          <div class="customer-card-name">${c.name}</div>
+          <div class="customer-card-industry">${c.industry}</div>
+        </div>
+        <div class="health-badge health-${c.health}">
+          <span class="health-dot"></span>
+          ${c.healthScore}
+        </div>
+      </div>
+      <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">${c.currentService}</div>
+      <div class="customer-card-meta">
+        <span>👥 ${c.stakeholders.length} đầu mối</span>
+        <span>💰 ${c.contractValue}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showHome() {
+  currentView = 'home';
+  document.getElementById('homeView').classList.remove('hidden');
+  document.getElementById('profileView').classList.add('hidden');
+  renderHome();
+  window.scrollTo(0, 0);
+}
+
+function showProfile(id) {
+  const c = customers.find(x => x.id === id);
+  if (!c) return;
+  currentCustomerId = id;
+  currentView = 'profile';
+
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('profileView').classList.remove('hidden');
+
+  document.getElementById('breadcrumbName').textContent = c.name;
+  document.getElementById('profileLogo').innerHTML = logoHtml(c);
+  document.getElementById('profileName').textContent = c.name;
+  document.getElementById('profileMeta').textContent = `${c.fullName} · ${c.industry} · ${c.size}`;
+  document.getElementById('profileTags').innerHTML = c.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+  document.getElementById('profileHealthBadge').innerHTML = `
+    <div class="health-badge health-${c.health}" style="font-size: 13px; padding: 6px 14px;">
+      <span class="health-dot"></span>
+      ${c.health === 'green' ? 'Khỏe mạnh' : c.health === 'yellow' ? 'Cần chú ý' : 'Rủi ro cao'}
+    </div>
+  `;
+
+  // Stakeholders
+  document.getElementById('stakeholderCount').textContent = `${c.stakeholders.length} người`;
+  document.getElementById('stakeholderList').innerHTML = c.stakeholders.map(s => `
+    <div class="stakeholder">
+      <div class="stakeholder-avatar">${s.name.split(' ').slice(-2).map(w => w[0]).join('')}</div>
+      <div class="stakeholder-body">
+        <div class="stakeholder-name">${s.name}</div>
+        <div class="stakeholder-role">${s.role}</div>
+        <div class="stakeholder-tags">
+          <span class="role-badge role-${s.type}">${s.typeLabel}</span>
+        </div>
+        <div class="stakeholder-info">
+          <div class="stakeholder-info-item">🎂 <strong>${s.bday}</strong></div>
+          <div class="stakeholder-info-item">📱 <strong>${s.phone}</strong></div>
+          <div class="stakeholder-info-item">📧 ${s.email}</div>
+          <div class="stakeholder-info-item">💬 Zalo: ${s.zalo}</div>
+          <div class="stakeholder-info-item" style="grid-column: 1/-1;">❤️ Sở thích: ${s.hobby}</div>
+          <div class="stakeholder-info-item" style="grid-column: 1/-1;">📡 Kênh ưu tiên: ${s.channel}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Timeline
+  document.getElementById('timeline').innerHTML = c.interactions.map(i => `
+    <div class="timeline-item">
+      <div class="timeline-dot ${i.type}"></div>
+      <div class="timeline-date">${i.date} · ${typeLabel(i.type)}</div>
+      <div class="timeline-title">${i.title}</div>
+      <div class="timeline-desc">${i.desc}</div>
+      <div class="timeline-who">👥 ${i.who}</div>
+    </div>
+  `).join('');
+
+  // Health
+  const hc = document.getElementById('healthScoreCircle');
+  hc.className = `health-score-circle ${c.health}`;
+  hc.textContent = c.healthScore;
+  document.getElementById('healthLabel').textContent = c.health === 'green' ? 'Khỏe mạnh' : c.health === 'yellow' ? 'Cần chú ý' : 'Rủi ro cao';
+  document.getElementById('healthReason').textContent = c.healthReason;
+  document.getElementById('healthFactors').innerHTML = c.healthFactors.map(f => `
+    <div class="health-factor">
+      <span>${f.label}</span>
+      <span class="health-factor-value" style="color: ${f.good ? 'var(--green)' : 'var(--red)'};">${f.value}</span>
+    </div>
+  `).join('');
+
+  // Reminders
+  document.getElementById('remindersList').innerHTML = c.reminders.map(r => `
+    <div class="reminder ${r.type}">
+      <div class="reminder-icon">${r.icon}</div>
+      <div class="reminder-body">
+        <div class="reminder-title">${r.title}</div>
+        <div class="reminder-desc">${r.desc}</div>
+        <div class="reminder-date">${r.date}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Company info
+  document.getElementById('companyInfo').innerHTML = `
+    <div class="info-row"><span class="info-label">Website</span><span class="info-value">${c.website}</span></div>
+    <div class="info-row"><span class="info-label">Quy mô</span><span class="info-value">${c.size}</span></div>
+    <div class="info-row"><span class="info-label">Địa chỉ</span><span class="info-value">${c.address}</span></div>
+    <div class="info-row"><span class="info-label">Ngày hợp tác</span><span class="info-value">${c.startDate}</span></div>
+    <div class="info-row"><span class="info-label">Giá trị HĐ</span><span class="info-value">${c.contractValue}</span></div>
+    <div class="info-row"><span class="info-label">Dịch vụ hiện tại</span><span class="info-value">${c.currentService}</span></div>
+  `;
+
+  window.scrollTo(0, 0);
+}
+
+function typeLabel(t) {
+  return { meeting: 'Họp', call: 'Gọi', email: 'Email', note: 'Ghi chú' }[t] || t;
+}
+
+// ====== SEARCH ======
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  const sugg = document.getElementById('searchSuggestions');
+
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    if (!q) { sugg.classList.remove('active'); return; }
+
+    const results = [];
+    customers.forEach(c => {
+      if (c.name.toLowerCase().includes(q) || c.fullName.toLowerCase().includes(q) || c.industry.toLowerCase().includes(q)) {
+        results.push({ type: 'company', customer: c, label: c.name, meta: c.industry });
+      }
+      c.stakeholders.forEach(s => {
+        if (s.name.toLowerCase().includes(q) || s.role.toLowerCase().includes(q)) {
+          results.push({ type: 'contact', customer: c, label: s.name, meta: `${s.role} · ${c.name}` });
+        }
+      });
+    });
+
+    if (!results.length) {
+      sugg.innerHTML = `<div class="suggestion-item" style="color: var(--text-muted);">Không tìm thấy kết quả cho "${q}"</div>`;
+    } else {
+      sugg.innerHTML = results.slice(0, 8).map(r => `
+        <div class="suggestion-item" onclick="showProfile('${r.customer.id}'); clearSearch();">
+          <div class="suggestion-logo">${logoHtml(r.customer)}</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600;">${r.label} ${r.type === 'contact' ? '👤' : '🏢'}</div>
+            <div class="suggestion-meta">${r.meta}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    sugg.classList.add('active');
+  });
+
+  input.addEventListener('blur', () => setTimeout(() => sugg.classList.remove('active'), 200));
+  input.addEventListener('focus', () => { if (input.value.trim()) sugg.classList.add('active'); });
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchSuggestions').classList.remove('active');
+}
+
+// ====== MODAL ======
+function openInteractionModal() {
+  document.getElementById('interactionModal').classList.add('active');
+}
+function closeInteractionModal() {
+  document.getElementById('interactionModal').classList.remove('active');
+  document.getElementById('modalTitle').value = '';
+  document.getElementById('modalDesc').value = '';
+  document.getElementById('modalWho').value = '';
+}
+function saveInteraction() {
+  const type = document.getElementById('modalType').value;
+  const title = document.getElementById('modalTitle').value.trim();
+  const desc = document.getElementById('modalDesc').value.trim();
+  const who = document.getElementById('modalWho').value.trim();
+  if (!title) { alert('Vui lòng nhập tiêu đề'); return; }
+
+  const c = customers.find(x => x.id === currentCustomerId);
+  const today = new Date().toLocaleDateString('vi-VN');
+  const item = { type, date: today, title, desc, who };
+  c.interactions.unshift(item);
+  saveAddedInteraction(currentCustomerId, item);
+  closeInteractionModal();
+  showProfile(currentCustomerId);
+  showToast('✅ Đã lưu tương tác mới — lưu trên máy chị, sẽ giữ lại khi tải lại trang');
+}
+
+// Boot
+init();
+</script>
+</body>
+</html>
